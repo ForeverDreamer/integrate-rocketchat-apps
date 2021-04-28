@@ -1,0 +1,15 @@
+{
+    "id": "bbf283ed-3f52-4602-9363-0c6e397c5633",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.4.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "doer",
+        "homepage": "doer",
+        "support": "499361328@qq.com"
+    },
+    "name": "integrate-rocketchat-app",
+    "nameSlug": "integrate-rocketchat-app",
+    "classFile": "IntegrateRocketchatApp.ts",
+    "description": "整合github上的零散实例代码供学习和参考"
+}

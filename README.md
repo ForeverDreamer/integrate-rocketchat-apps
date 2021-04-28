@@ -1,1 +1,1 @@
-# rocketchat-apps
+# integrate-rocketchat-apps
