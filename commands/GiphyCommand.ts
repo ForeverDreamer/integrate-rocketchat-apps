@@ -13,19 +13,24 @@ export class GiphyCommand implements ISlashCommand {
     public providesPreview: boolean;
 
     constructor(private readonly app: IntegrateRocketchatApp) {
-        this.command = 'giphy';
-        this.i18nParamsExample = '';
-        this.i18nDescription = '';
+        this.command = GiphyCommand.CommandName;
+        this.i18nParamsExample = 'your_message_optional';
+        this.i18nDescription = 'Slash_giphy_Description';
         this.providesPreview = true;
     }
 
-    public executor(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> {
+    public async executor(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> {
         // if there are no args or args[0] === 'random'
         // then get a single one
 
         // otherwise, fetch the results and get a random one
         // as the max amount returned will be ten
-        throw new Error('Method not implemented.');
+        // throw new Error('Method not implemented.');
+        const builder = modify.getCreator().startMessage()
+            .setSender(context.getSender()).setRoom(context.getRoom())
+            .setText('giphy' + context.getArguments().join(' '));
+
+        await modify.getCreator().finish(builder);
     }
 
     public async previewer(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<ISlashCommandPreview> {
@@ -39,7 +44,7 @@ export class GiphyCommand implements ISlashCommand {
             this.app.getLogger().error('Failed on something:', e);
             return {
                 i18nTitle: 'TODO ERROR',
-                items: new Array(),
+                items: [],
             };
         }
 
@@ -67,7 +72,7 @@ export class GiphyCommand implements ISlashCommand {
             this.app.getLogger().error('Failed getting a gif', e);
             builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
 
-            modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
+            await modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
         }
     }
 }

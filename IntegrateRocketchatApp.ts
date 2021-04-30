@@ -4,28 +4,27 @@ import {
     IConfigurationModify,
     IEnvironmentRead,
     IHttp,
-    ILogger,
+    ILogger, IMessageBuilder, IModify, IPersistence,
     IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
+import { IMessage, IPreMessageSentModify } from '@rocket.chat/apps-engine/definition/messages';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISetting, SettingType } from '@rocket.chat/apps-engine/definition/settings';
+import {
+    IUIKitInteractionHandler,
+    UIKitBlockInteractionContext,
+    UIKitViewSubmitInteractionContext,
+} from '@rocket.chat/apps-engine/definition/uikit';
+import {UIKitViewCloseInteractionContext} from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionContext';
 
-import { GimmeCommand } from './commands/asciiart/GimmeCommand';
-import { LennyCommand } from './commands/asciiart/LennyCommand';
-import { ShrugCommand } from './commands/asciiart/ShrugCommand';
-import { TableflipCommand } from './commands/asciiart/TableflipCommand';
-import { UnflipCommand } from './commands/asciiart/UnflipCommand';
+import { CreateUICommand } from './commands/CreateUICommand';
 import { GiphyCommand } from './commands/GiphyCommand';
 import { GifGetter } from './helpers/GifGetter';
 
-export class IntegrateRocketchatApp extends App {
-    private gimmeId = 'gimmie_cmd';
-    private lennyId = 'lenny_cmd';
-    private shrugId = 'shrug_cmd';
-    private flipId = 'flip_cmd';
-    private unflipId = 'unflip_cmd';
+export class IntegrateRocketchatApp extends App implements IUIKitInteractionHandler, IPreMessageSentModify {
     private giphyId = 'giphy_cmd';
+    private createUiId = 'create_ui_cmd';
 
     private readonly gifGetter: GifGetter;
 
@@ -39,14 +38,36 @@ export class IntegrateRocketchatApp extends App {
         return this.gifGetter;
     }
 
+    public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+        return {
+            success: true,
+        };
+    }
+
+    public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+        return {
+            success: true,
+        };
+    }
+
+    public asyncexecuteViewClosedHandler(context: UIKitViewCloseInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+        return {
+            success: true,
+        };
+    }
+
+    public async checkPreMessageSentModify(message: IMessage, read: IRead, http: IHttp): Promise<boolean> {
+        return true;
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public async executePreMessageSentModify(message: IMessage, builder: IMessageBuilder, read: IRead, http: IHttp, persistence: IPersistence): Promise<IMessage> {
+        return message;
+    }
+
     public async onEnable(environmentRead: IEnvironmentRead, configModify: IConfigurationModify): Promise<boolean> {
         const sets = environmentRead.getSettings();
 
-        await this.enableOrDisableCommand(this.gimmeId, await sets.getValueById(this.gimmeId), configModify);
-        await this.enableOrDisableCommand(this.lennyId, await sets.getValueById(this.lennyId), configModify);
-        await this.enableOrDisableCommand(this.shrugId, await sets.getValueById(this.shrugId), configModify);
-        await this.enableOrDisableCommand(this.flipId, await sets.getValueById(this.flipId), configModify);
-        await this.enableOrDisableCommand(this.unflipId, await sets.getValueById(this.unflipId), configModify);
         await this.enableOrDisableCommand(this.giphyId, await sets.getValueById(this.giphyId), configModify);
 
         return true;
@@ -57,118 +78,48 @@ export class IntegrateRocketchatApp extends App {
     }
 
     protected async extendConfiguration(configuration: IConfigurationExtend): Promise<void> {
-        await configuration.settings.provideSetting({
-            id: this.gimmeId,
-            type: SettingType.BOOLEAN,
-            packageValue: true,
-            required: false,
-            public: false,
-            i18nLabel: 'Enable_Gimme_Command',
-            i18nDescription: 'Enable_Gimme_Command_Description',
-        });
-
-        await configuration.settings.provideSetting({
-            id: this.lennyId,
-            type: SettingType.BOOLEAN,
-            packageValue: true,
-            required: false,
-            public: false,
-            i18nLabel: 'Enable_Lenny_Command',
-            i18nDescription: 'Enable_Lenny_Command_Description',
-        });
-
-        await configuration.settings.provideSetting({
-            id: this.shrugId,
-            type: SettingType.BOOLEAN,
-            packageValue: true,
-            required: false,
-            public: false,
-            i18nLabel: 'Enable_Shrug_Command',
-            i18nDescription: 'Enable_Shrug_Command_Description',
-        });
-
-        await configuration.settings.provideSetting({
-            id: this.flipId,
-            type: SettingType.BOOLEAN,
-            packageValue: true,
-            required: false,
-            public: false,
-            i18nLabel: 'Enable_Tableflip_Command',
-            i18nDescription: 'Enable_Tableflip_Command_Description',
-        });
-
-        await configuration.settings.provideSetting({
-            id: this.unflipId,
-            type: SettingType.BOOLEAN,
-            packageValue: true,
-            required: false,
-            public: false,
-            i18nLabel: 'Enable_Unflip_Table_Command',
-            i18nDescription: 'Enable_Unflip_Table_Command_Description',
-        });
 
         await configuration.settings.provideSetting({
             id: this.giphyId,
             type: SettingType.BOOLEAN,
             packageValue: true,
-            required: false,
+            value: true,
+            required: true,
             public: false,
-            i18nLabel: 'Enable_GiphyId_Table_Command',
-            i18nDescription: 'Enable_GiphyId_Table_Command_Description',
+            i18nLabel: '启用/禁用giphy命令',
+        });
+        await configuration.settings.provideSetting({
+            id: this.createUiId,
+            type: SettingType.BOOLEAN,
+            packageValue: true,
+            value: true,
+            required: true,
+            public: false,
+            i18nLabel: '启用/禁用create_ui命令',
         });
 
-        await configuration.slashCommands.provideSlashCommand(new GimmeCommand());
-        await configuration.slashCommands.provideSlashCommand(new LennyCommand());
-        await configuration.slashCommands.provideSlashCommand(new ShrugCommand());
-        await configuration.slashCommands.provideSlashCommand(new TableflipCommand());
-        await configuration.slashCommands.provideSlashCommand(new UnflipCommand());
         await configuration.slashCommands.provideSlashCommand(new GiphyCommand(this));
+        await configuration.slashCommands.provideSlashCommand(new CreateUICommand(this));
     }
 
     private async enableOrDisableCommand(id: string, doEnable: boolean, configModify: IConfigurationModify): Promise<void> {
         switch (id) {
-            case this.gimmeId:
-                if (doEnable) {
-                    await configModify.slashCommands.enableSlashCommand(GimmeCommand.CommandName);
-                } else {
-                    await configModify.slashCommands.disableSlashCommand(GimmeCommand.CommandName);
-                }
-                return;
-            case this.lennyId:
-                if (doEnable) {
-                    await configModify.slashCommands.enableSlashCommand(LennyCommand.CommandName);
-                } else {
-                    await configModify.slashCommands.disableSlashCommand(LennyCommand.CommandName);
-                }
-                return;
-            case this.shrugId:
-                if (doEnable) {
-                    await configModify.slashCommands.enableSlashCommand(ShrugCommand.CommandName);
-                } else {
-                    await configModify.slashCommands.disableSlashCommand(ShrugCommand.CommandName);
-                }
-                return;
-            case this.flipId:
-                if (doEnable) {
-                    await configModify.slashCommands.enableSlashCommand(TableflipCommand.CommandName);
-                } else {
-                    await configModify.slashCommands.disableSlashCommand(TableflipCommand.CommandName);
-                }
-                return;
-            case this.unflipId:
-                if (doEnable) {
-                    await configModify.slashCommands.enableSlashCommand(UnflipCommand.CommandName);
-                } else {
-                    await configModify.slashCommands.disableSlashCommand(UnflipCommand.CommandName);
-                }
-                return;
-            case this.giphyId:
+            case this.giphyId: {
                 if (doEnable) {
                     await configModify.slashCommands.enableSlashCommand(GiphyCommand.CommandName);
                 } else {
                     await configModify.slashCommands.disableSlashCommand(GiphyCommand.CommandName);
                 }
-                return;
+                break;
+            }
+            case this.createUiId: {
+                if (doEnable) {
+                    await configModify.slashCommands.enableSlashCommand(CreateUICommand.CommandName);
+                } else {
+                    await configModify.slashCommands.disableSlashCommand(CreateUICommand.CommandName);
+                }
+                break;
+            }
         }
     }
 }
