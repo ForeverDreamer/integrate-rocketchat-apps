@@ -16,7 +16,7 @@ import {
     UIKitBlockInteractionContext,
     UIKitViewSubmitInteractionContext,
 } from '@rocket.chat/apps-engine/definition/uikit';
-import {UIKitViewCloseInteractionContext} from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionContext';
+import { UIKitViewCloseInteractionContext } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionContext';
 
 import { CreateUICommand } from './commands/CreateUICommand';
 import { GiphyCommand } from './commands/GiphyCommand';
