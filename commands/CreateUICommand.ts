@@ -4,7 +4,7 @@ import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/def
 import { UIType } from '../definitions/MiscType';
 import { IntegrateRocketchatApp } from '../IntegrateRocketchatApp';
 import { notifyError } from '../lib/errorHandlers';
-import { createModal } from '../lib/functions/ui/createModal';
+import { createModal } from '../lib/functions/ui/poll/createModal';
 
 export class CreateUICommand implements ISlashCommand {
     public static CommandName = 'create_ui';

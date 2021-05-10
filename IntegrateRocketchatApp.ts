@@ -21,6 +21,7 @@ import { UIKitViewCloseInteractionContext } from '@rocket.chat/apps-engine/defin
 import { CreateUICommand } from './commands/CreateUICommand';
 import { GiphyCommand } from './commands/GiphyCommand';
 import { GifGetter } from './helpers/GifGetter';
+// import { createPollMessage } from './lib/functions/ui/poll/createPollMessage';
 
 export class IntegrateRocketchatApp extends App implements IUIKitInteractionHandler, IPreMessageSentModify {
     private giphyId = 'giphy_cmd';
@@ -39,6 +40,41 @@ export class IntegrateRocketchatApp extends App implements IUIKitInteractionHand
     }
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+        const data = context.getInteractionData();
+
+        this.getLogger().error(data);
+
+        // const { state }: {
+        //     state: {
+        //         poll: {
+        //             question: string,
+        //             [option: string]: string,
+        //         },
+        //         config?: {
+        //             mode?: string,
+        //             visibility?: string,
+        //         },
+        //     },
+        // } = data.view as any;
+        //
+        // if (!state) {
+        //     return context.getInteractionResponder().viewErrorResponse({
+        //         viewId: data.view.id,
+        //         errors: {
+        //             question: 'Error creating poll',
+        //         },
+        //     });
+        // }
+        //
+        // try {
+        //     await createPollMessage(data, read, modify, persistence, data.user.id);
+        // } catch (err) {
+        //     return context.getInteractionResponder().viewErrorResponse({
+        //         viewId: data.view.id,
+        //         errors: err,
+        //     });
+        // }
+
         return {
             success: true,
         };
