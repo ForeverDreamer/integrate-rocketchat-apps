@@ -20,19 +20,19 @@ export async function createModal({id = '', args, persistence, data, modify, opt
 
     const blockBuilder = modify.getCreator().getBlockBuilder();
     blockBuilder.addInputBlock({
-        blockId: 'title_block',
-        label: blockBuilder.newPlainTextObject('标题'),
+        blockId: 'poll_question',
+        label: blockBuilder.newPlainTextObject('调查问题'),
         element: blockBuilder.newPlainTextInputElement({
-            actionId: 'title',
-            placeholder: blockBuilder.newPlainTextObject('请输入标题'),
-            initialValue: '',
+            actionId: 'question',
+            placeholder: blockBuilder.newPlainTextObject('请输入调查问题'),
+            initialValue: args[1],
             multiline: false,
         }),
         optional: false,
     })
         .addDividerBlock()
         .addInputBlock({
-            blockId: 'description_block',
+            blockId: 'poll_question',
             label: blockBuilder.newPlainTextObject('描述'),
             element: blockBuilder.newPlainTextInputElement({
                 actionId: 'description',
@@ -44,15 +44,15 @@ export async function createModal({id = '', args, persistence, data, modify, opt
         })
         .addDividerBlock()
         .addImageBlock({
-            blockId: 'title_image_block',
+            blockId: 'poll_image',
             title: {type: TextObjectType.PLAINTEXT, text: '钢铁侠', emoji: false},
-            imageUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F18%2F20180818173404_pbvcb.thumb.700_0.jpg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623206258&t=16bc9d70c72d8f992ef4185f07f4a4b6',
+            imageUrl: 'https://iknow-pic.cdn.bcebos.com/d058ccbf6c81800abba4bb4cb33533fa828b472a',
             altText: '钢铁侠提示语',
         });
 
     for (let i = 0; i < options; i++) {
         blockBuilder.addInputBlock({
-            blockId: 'poll' + i + '_block',
+            blockId: 'poll_question',
             label: blockBuilder.newPlainTextObject('投票选项' + i),
             element: blockBuilder.newPlainTextInputElement({
                 actionId: `option-${i}`,
@@ -152,7 +152,7 @@ export async function createModal({id = '', args, persistence, data, modify, opt
         elements: [
             blockBuilder.newPlainTextObject('PlainText ContextBlock'),
             blockBuilder.newImageElement({
-                imageUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F18%2F20180818173404_pbvcb.thumb.700_0.jpg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623206258&t=16bc9d70c72d8f992ef4185f07f4a4b6',
+                imageUrl: 'https://iknow-pic.cdn.bcebos.com/d058ccbf6c81800abba4bb4cb33533fa828b472a',
                 altText: '钢铁侠提示语',
             }),
             blockBuilder.newMarkdownTextObject('MarkdownText ContextBlock'),
@@ -162,7 +162,7 @@ export async function createModal({id = '', args, persistence, data, modify, opt
     blockBuilder.addSectionBlock({
         text: blockBuilder.newMarkdownTextObject('SectionImageBlock'),
         accessory: blockBuilder.newImageElement({
-            imageUrl: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F18%2F20180818173404_pbvcb.thumb.700_0.jpg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623206258&t=16bc9d70c72d8f992ef4185f07f4a4b6',
+            imageUrl: 'https://iknow-pic.cdn.bcebos.com/d058ccbf6c81800abba4bb4cb33533fa828b472a',
             altText: '钢铁侠提示语',
         }),
     });
@@ -193,10 +193,12 @@ export async function createModal({id = '', args, persistence, data, modify, opt
         id: viewId,
         title: blockBuilder.newPlainTextObject('创建投票调查'),
         submit: blockBuilder.newButtonElement({
-            text: blockBuilder.newPlainTextObject(args[1] || '确认'),
+            // text: blockBuilder.newPlainTextObject(args[1] || '确认'),
+            text: blockBuilder.newPlainTextObject('确认'),
         }),
         close: blockBuilder.newButtonElement({
-            text: blockBuilder.newPlainTextObject(args[2] || '取消'),
+            // text: blockBuilder.newPlainTextObject(args[2] || '取消'),
+            text: blockBuilder.newPlainTextObject('取消'),
         }),
         blocks: blockBuilder.getBlocks(),
     };

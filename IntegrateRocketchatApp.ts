@@ -42,29 +42,34 @@ export class IntegrateRocketchatApp extends App implements IUIKitInteractionHand
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
 
-        this.getLogger().error(data);
+        this.getLogger().debug(data);
 
-        // const { state }: {
-        //     state: {
-        //         poll: {
-        //             question: string,
-        //             [option: string]: string,
-        //         },
-        //         config?: {
-        //             mode?: string,
-        //             visibility?: string,
-        //         },
-        //     },
-        // } = data.view as any;
+        const { state }: {
+            state: {
+                poll_question: {
+                    question: string,
+                    [option: string]: string,
+                },
+                config_mode_block: string,
+                config_visibility_block: string,
+            },
+        } = data.view as any;
         //
-        // if (!state) {
-        //     return context.getInteractionResponder().viewErrorResponse({
-        //         viewId: data.view.id,
-        //         errors: {
-        //             question: 'Error creating poll',
-        //         },
-        //     });
-        // }
+        if (!state) {
+            return context.getInteractionResponder().viewErrorResponse({
+                viewId: data.view.id,
+                errors: {
+                    'question': '比如：今晚吃啥？',
+                    'description': '比如：统计晚餐偏好，方便预定餐厅。',
+                    'option-0': '比如：肯德基',
+                    'option-1': '比如：火锅',
+                    'option-2': '比如：新疆菜',
+                    // mode: '单选/多选',
+                    // visibility: '公开/私密',
+                    // reason: '请选择原因'
+                },
+            });
+        }
         //
         // try {
         //     await createPollMessage(data, read, modify, persistence, data.user.id);
