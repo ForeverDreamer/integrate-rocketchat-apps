@@ -6,9 +6,9 @@ import {IUIKitModalViewParam} from '@rocket.chat/apps-engine/definition/uikit/UI
 import {IModalContext} from '../../../../definitions/Poll';
 import {uuid} from '../../../utils';
 
-export async function createModal({id = '', args, persistence, data, modify, options = 3}: {
+export async function createModal({id = '', args = ['modal'], persistence, data, modify, options = 2}: {
     id?: string,
-    args: Array<string>,
+    args?: Array<string>,
     persistence: IPersistence,
     data: IModalContext,
     modify: IModify,
@@ -78,7 +78,7 @@ export async function createModal({id = '', args, persistence, data, modify, opt
         ],
     });
     blockBuilder.addActionsBlock({
-        blockId: 'config_mode_block',
+        blockId: 'poll_config',
         elements: [
             blockBuilder.newStaticSelectElement({
                 actionId: 'mode',
@@ -98,7 +98,7 @@ export async function createModal({id = '', args, persistence, data, modify, opt
         ],
     });
     blockBuilder.addActionsBlock({
-        blockId: 'config_visibility_block',
+        blockId: 'poll_config',
         elements: [
             blockBuilder.newStaticSelectElement({
                 actionId: 'visibility',
@@ -118,7 +118,7 @@ export async function createModal({id = '', args, persistence, data, modify, opt
         ],
     });
     blockBuilder.addActionsBlock({
-        blockId: 'config_reason_block',
+        blockId: 'poll_config',
         elements: [
             blockBuilder.newMultiStaticElement({
                 actionId: 'reason',
